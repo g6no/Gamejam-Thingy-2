@@ -13,15 +13,24 @@ var is_attacking : bool = false
 var cannot_attack : bool = false
 
 
+var dash_unlocked : bool = true
+var can_dash : bool = true
+
+
+
+
 #Exported variables
 export var move_speed = 250
 export var damage = 10
 export var interact_dist = 70
+export var dash_multiplier = 4
 
 #onready variables
 onready var ray_cast = $RayCast2D
 onready var anim = $AnimatedSprite
 onready var attack_timer = $AttackAnimationTimer
+onready var dash_time = $DashTime
+onready var dash_cooldown = $DashCooldown
 #onready var ui = get_node("/root/MainScene/CanvasLayer/UI")
 
 func _physics_process(delta):
@@ -44,6 +53,8 @@ func _physics_process(delta):
 		is_attacking = true
 		play_attack(facing_dir)
 		attack()
+	if Input.is_action_just_pressed("dash") and can_dash and dash_unlocked:
+		dash()
 	
 	vel = vel.normalized()
 	move_and_slide(vel*move_speed, Vector2.ZERO)
@@ -119,3 +130,18 @@ func attack():
 		var colliding_node = ray_cast.get_collider()
 		if colliding_node is KinematicBody2D:
 			colliding_node.take_damage(damage)
+
+func dash():
+	can_dash = false
+	dash_cooldown.start()
+	dash_time.start()
+	move_speed *= dash_multiplier
+
+
+func _on_DashTime_timeout():
+	move_speed /= dash_multiplier
+
+
+
+func _on_DashCooldown_timeout():
+	can_dash = true
