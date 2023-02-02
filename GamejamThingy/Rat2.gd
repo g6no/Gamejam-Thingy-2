@@ -4,6 +4,7 @@ var cur_hp = 5
 var max_hp = 5
 
 var damaged = false
+var is_attacking = false
 
 # Exported Variables
 export var move_speed = 150
@@ -36,16 +37,16 @@ func _physics_process(delta):
 	print(col_shape.rotation_degrees)
 	print(col_shape.position.y)
 
+	play_enemy_animation()
 	if distance > attack_distance and distance < chase_distance:
-		play_enemy_animation()
 		move_and_slide(enemy_to_player * move_speed)
-	else:
-		$AnimatedSprite.stop()
 
 func _on_Timer_timeout():
+	is_attacking = false
 	if position.distance_to(player.position) <= attack_distance:
 		player.take_damage(damage)
-
+		is_attacking = true
+	
 func take_damage(damage_to_take):
 	if not damaged:
 		print("Enemy took ", damage_to_take, " damage!")
@@ -60,26 +61,49 @@ func take_damage(damage_to_take):
 			die()
 
 func play_enemy_animation():
-	if enemy_to_player.x >= 0.5:
-		if col_shape.rotation_degrees != 90 and col_shape.position.y != 8:
-			col_shape.rotation_degrees = 90
-			col_shape.position.y = 8
-		$AnimatedSprite.play("right")
-	elif enemy_to_player.x < -0.5:
-		if col_shape.rotation_degrees != 90 and col_shape.position.y != 8:
-			col_shape.rotation_degrees = 90
-			col_shape.position.y = 8
-		$AnimatedSprite.play("left")
-	elif enemy_to_player.y > 0.5:
-		if col_shape.rotation_degrees == 90 and col_shape.position.y == 8:
-			col_shape.rotation_degrees = 0
-			col_shape.position.y = 1
-		$AnimatedSprite.play("down")
-	elif enemy_to_player.y < -0.5:
-		if col_shape.rotation_degrees == 90 and col_shape.position.y == 8:
-			col_shape.rotation_degrees = 0
-			col_shape.position.y = 1
-		$AnimatedSprite.play("up")
+	if not is_attacking:
+		if enemy_to_player.x >= 0.5:
+			if col_shape.rotation_degrees != 90 and col_shape.position.y != 8:
+				col_shape.rotation_degrees = 90
+				col_shape.position.y = 8
+			$AnimatedSprite.play("right")
+		elif enemy_to_player.x < -0.5:
+			if col_shape.rotation_degrees != 90 and col_shape.position.y != 8:
+				col_shape.rotation_degrees = 90
+				col_shape.position.y = 8
+			$AnimatedSprite.play("left")
+		elif enemy_to_player.y > 0.5:
+			if col_shape.rotation_degrees == 90 and col_shape.position.y == 8:
+				col_shape.rotation_degrees = 0
+				col_shape.position.y = 1
+			$AnimatedSprite.play("down")
+		elif enemy_to_player.y < -0.5:
+			if col_shape.rotation_degrees == 90 and col_shape.position.y == 8:
+				col_shape.rotation_degrees = 0
+				col_shape.position.y = 1
+			$AnimatedSprite.play("up")
+	else:
+		if enemy_to_player.x >= 0.5:
+			if col_shape.rotation_degrees != 90 and col_shape.position.y != 8:
+				col_shape.rotation_degrees = 90
+				col_shape.position.y = 8
+			$AnimatedSprite.play("attack_right")
+		elif enemy_to_player.x < -0.5:
+			if col_shape.rotation_degrees != 90 and col_shape.position.y != 8:
+				col_shape.rotation_degrees = 90
+				col_shape.position.y = 8
+			$AnimatedSprite.play("attack_left")
+		elif enemy_to_player.y > 0.5:
+			if col_shape.rotation_degrees == 90 and col_shape.position.y == 8:
+				col_shape.rotation_degrees = 0
+				col_shape.position.y = 1
+			$AnimatedSprite.play("attack_down")
+		elif enemy_to_player.y < -0.5:
+			if col_shape.rotation_degrees == 90 and col_shape.position.y == 8:
+				col_shape.rotation_degrees = 0
+				col_shape.position.y = 1
+			$AnimatedSprite.play("attack_up")
+		
 
 
 func die():
