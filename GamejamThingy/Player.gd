@@ -31,6 +31,7 @@ onready var anim = $AnimatedSprite
 onready var attack_timer = $AttackAnimationTimer
 onready var dash_time = $DashTime
 onready var dash_cooldown = $DashCooldown
+onready var dust_trail = $DashTrail
 #onready var ui = get_node("/root/MainScene/CanvasLayer/UI")
 
 func _physics_process(delta):
@@ -136,6 +137,9 @@ func dash():
 	dash_cooldown.start()
 	dash_time.start()
 	move_speed *= dash_multiplier
+	dust_trail.restart()
+	dust_trail.emitting = true
+	
 
 
 func _on_DashTime_timeout():
