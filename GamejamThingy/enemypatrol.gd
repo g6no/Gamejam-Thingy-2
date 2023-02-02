@@ -8,7 +8,7 @@ var patrol_points
 var patrol_index = 0
 var velocity = Vector2.ZERO
 
-onready var patrol_path = get_node("/root/Huh?/Path2D")
+onready var patrol_path = get_node("..//Path2D")
 
 func _ready():
 	if patrol_path:
