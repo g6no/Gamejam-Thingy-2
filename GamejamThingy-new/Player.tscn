@@ -1,7 +1,8 @@
-[gd_scene load_steps=56 format=2]
+[gd_scene load_steps=57 format=2]
 
 [ext_resource path="res://sprites/characters/player.png" type="Texture" id=1]
 [ext_resource path="res://Player.gd" type="Script" id=2]
+[ext_resource path="res://sprites/particles/dust.png-f21693587331a548ce7f710338fb9a12.stex" type="Texture" id=3]
 
 [sub_resource type="AtlasTexture" id=45]
 atlas = ExtResource( 1 )
@@ -285,3 +286,22 @@ collide_with_areas = true
 
 [node name="AttackAnimationTimer" type="Timer" parent="."]
 wait_time = 0.5
+
+[node name="DashTrail" type="CPUParticles2D" parent="."]
+emitting = false
+lifetime = 1.2
+one_shot = true
+explosiveness = 0.8
+lifetime_randomness = 0.7
+texture = ExtResource( 3 )
+
+[node name="DashTime" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="DashCooldown" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="timeout" from="DashTime" to="." method="_on_DashTime_timeout"]
+[connection signal="timeout" from="DashCooldown" to="." method="_on_DashCooldown_timeout"]
